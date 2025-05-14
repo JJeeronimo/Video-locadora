@@ -130,13 +130,32 @@ class Locadora:
 
         print(f"\n🎉 Filme '{filme.nome}' locado com sucesso para '{cliente.nome}'! Deve ser devolvido até {data_devolucao}.\n")
 
+    def devolver_filme(self):
+        print("\n=== 🔄 Devolução de Filme ===")
+        nome_cliente = input("Digite o nome do cliente que deseja devolver um filme: ").strip().lower()
+        cliente = next((c for c in self.clientes if c.nome.lower() == nome_cliente), None)
+
+        if cliente is None or not cliente.filmes_locados:
+            print("\n⚠️ Cliente não encontrado ou não tem filmes locados.\n")
+            return
+
+        nome_filme = input("Digite o nome do filme que deseja devolver: ").strip().lower()
+
+        if nome_filme in [f.lower() for f in cliente.filmes_locados.keys()]:
+            filme = next((f for f in self.filmes if f.nome.lower() == nome_filme), None)
+            if filme:
+                filme.disponivel = True
+                del cliente.filmes_locados[filme.nome]
+                print(f"\n✅ Filme '{filme.nome}' devolvido com sucesso!\n")
+            else:
+                print("\n⚠️ Filme não encontrado.\n")
+        else:
+            print("\n⚠️ O cliente não locou este filme.\n")
 
 locadora = Locadora()
 
 while True:
-    print("\n=====================================")
-    print("     🎬 LOCADORA DE FILMES 🎬      ")
-    print("=====================================")
+    print("\n🎬 LOCADORA DE FILMES 🎬")
     print("1️⃣ - Cadastrar Cliente")
     print("2️⃣ - Listar Clientes")
     print("3️⃣ - Listar Filmes")
@@ -144,7 +163,6 @@ while True:
     print("5️⃣ - Devolver Filme")
     print("6️⃣ - Cadastrar Filme")   
     print("7️⃣ - Sair")  
-    print("=====================================")
 
     opcao = input("Escolha uma opção: ")
 
